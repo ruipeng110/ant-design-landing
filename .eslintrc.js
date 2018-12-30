@@ -21,6 +21,7 @@ const eslintrc = {
     'babel',
   ],
   rules: {
+	'linebreak-style':[2, 'windows'],
     'func-names': 0,
     'arrow-body-style': 0,
     'react/sort-comp': 0,

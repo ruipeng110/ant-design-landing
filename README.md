@@ -20,6 +20,10 @@ Landing Pages of Ant Design System
 
 Landing is a template built by Ant Motion's motion components. It has a rich homepage template, downloads the template code package, and can be used quickly. You can also use the editor to quickly build your own dedicated page.
 
+<div>
+What did chenrp do,让package.json在windows环境中跑。修改package.json中的cp-prettier来达到切换不同环境脚本。
+</div>
+
 <div align="center">
   <a href="https://landing.ant.design/edit">Go Editing 📝</a>
 </div>
