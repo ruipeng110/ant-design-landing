@@ -3,6 +3,7 @@ import { Icon, message, Menu, Dropdown, Button, Modal } from 'antd';
 import CodeMirror from 'rc-editor-list/lib/components/common/CodeMirror';
 import 'codemirror/mode/javascript/javascript.js';
 
+import config from '../../../config';
 import { formatCode } from '../utils';
 import { getNewHref } from '../../../utils';
 import { getURLData, setURLData } from '../../../theme/template/utils';
@@ -79,6 +80,21 @@ class NavController extends React.PureComponent {
           cb();
         }
         this.setState({ isLoad: null });
+      });
+    });
+  }
+
+  upload = (e, cb) => {
+    // if (!location.port && window.gtag) {
+    //   window.gtag('event', 'save');
+    // }
+    this.setState({
+      isLoad: '上传',
+    }, () => {
+      console.log(config, config.save);
+      config.post(config.save, { content: this.props.templateData.data });
+      this.setState({
+        isLoad: false,
       });
     });
   }
@@ -183,7 +199,8 @@ class NavController extends React.PureComponent {
         <ItemGroup title="近期所建" key="0">
           {localChild}
         </ItemGroup>
-      </Menu>);
+      </Menu>
+    );
   }
 
   onChangeDataOpenModal = () => {
@@ -246,6 +263,11 @@ class NavController extends React.PureComponent {
         onClick: this.state.isLoad === '下载' ? null : this.onSaveCode,
       },
       { name: '编辑数据', icon: 'tool', onClick: this.onChangeDataOpenModal },
+      {
+        name: '上传',
+        icon: this.state.isLoad === '上传' ? 'loading' : 'upload',
+        onClick: this.state.isLoad === '上传' ? null : this.upload,
+      },
     ].map((item, i) => (
       <li key={i.toString()} onClick={item.onClick} disabled={!item.onClick}>
         <Icon type={item.icon} />
@@ -278,7 +300,8 @@ class NavController extends React.PureComponent {
             placement="bottomRight"
           >
             {newIcon}
-          </Dropdown>) : newIcon}
+          </Dropdown>
+        ) : newIcon}
         <Modal
           title="当前编辑数据"
           visible={this.state.codeModalShow}

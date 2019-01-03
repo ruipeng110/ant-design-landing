@@ -10,7 +10,7 @@ import {
 } from './utils';
 import { getState, mergeEditDataToDefault, mdId } from '../../utils';
 import { getURLData } from '../../theme/template/utils';
-import { getUserData } from '../../edit-module/actions';
+import { getUserData,getMongoData } from '../../edit-module/actions';
 
 import Point from './other/Point';
 
@@ -26,7 +26,8 @@ class Layout extends React.Component {
     this.isEdit = getURLData('isEdit');
     if (!this.isEdit) {
       const { dispatch } = props;
-      dispatch(getUserData());
+      dispatch(getMongoData);
+      // dispatch(getUserData());
     } else {
       const style = document.createElement('style');
       style.type = 'text/css';
@@ -61,6 +62,7 @@ class Layout extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger
     if (!this.isEdit) {
       this.setState({
         templateData: nextProps.templateData,
@@ -82,6 +84,7 @@ class Layout extends React.Component {
   }
 
   messageHandle = (e) => {
+    debugger
     if (e.data.type && e.data.type.indexOf('webpack') === -1) {
       window.localStorage.setItem(e.data.uid, JSON.stringify({
         id: e.data.uid,

@@ -3,10 +3,14 @@ import AV from 'leancloud-storage';
 import { getURLData, setURLData } from '../theme/template/utils';
 import defaultData from './default.template.config.js';
 
+import queryString from 'query-string';
+import { get, query } from '../config';
 export const appId = 'ogaJShC9qJERt8LqGO80z2pO-gzGzoHsz';
 export const appKey = '8e5H5xBF86hI9vItQI1pt4kP';
 const fileName = 'Edit';
 const userAvName = 'EditUser';
+
+
 AV.init({
   appId,
   appKey,
@@ -69,7 +73,21 @@ export const switchTemplate = (key) => {
   setURLData('uid', key);
   location.reload();
 };
+
+export const getMongoData = dispatch => {
+  const param = queryString.parse(location.search);
+  get(query, param).then(response=>{
+    dispatch({
+      type: postType.POST_SUCCESS,
+      templateData: {attributes: response && response.content}
+    });
+  });
+
+}
+
+
 export const getUserData = data => (dispatch) => {
+  debugger
   // 获取 url 上是否有 user id;
   const hash = getURLData('uid');
   const cloneId = getURLData('cloneId');
