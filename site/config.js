@@ -1,8 +1,8 @@
 import request from './request';
 
 
-// const baseUrl = 'http://140.143.63.112:8051/ant/';
-const baseUrl = 'http://localhost:8051/ant/';
+const baseUrl = 'http://140.143.63.112:8051/ant/';
+// const baseUrl = 'http://localhost:8051/ant/';
 
 export default {
   query: `${baseUrl}query`,
