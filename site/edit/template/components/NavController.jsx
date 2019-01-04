@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, message, Menu, Dropdown, Button, Modal } from 'antd';
+import { Icon, message, Menu, Dropdown, Button, Modal, Form, Input } from 'antd';
 import CodeMirror from 'rc-editor-list/lib/components/common/CodeMirror';
 import 'codemirror/mode/javascript/javascript.js';
 
@@ -8,11 +8,52 @@ import { formatCode } from '../utils';
 import { getNewHref } from '../../../utils';
 import { getURLData, setURLData } from '../../../theme/template/utils';
 import {
-  saveData, userName, newTemplate, removeTemplate, setTemplateData,
+  saveData, userName, newTemplate, removeTemplate, setTemplateData,getMongoData1
 } from '../../../edit-module/actions';
 import { saveJsZip, saveJSON } from './saveJsZip';
 
 const { Item, ItemGroup } = Menu;
+
+class EditForm extends React.Component {
+
+  state = {};
+
+  componentDidMount() {
+    // To disabled submit button at the beginning.
+    this.props.form.validateFields();
+  }
+
+  onChange = (event) => {
+    const value = event.target.value;
+    this.props.onChange(value);
+    // this.setState({
+    //   value
+    // })
+  };
+
+  render() {
+    const {
+      getFieldDecorator, getFieldError, isFieldTouched,
+    } = this.props.form;
+
+    // Only show error after a field is touched.
+    const userNameError = isFieldTouched('id') && getFieldError('id');
+    return (
+      <Form layout="horizontal" onSubmit={this.handleSubmit}>
+        <Form.Item
+          validateStatus={userNameError ? 'error' : ''}
+          help={userNameError || ''}
+        >
+          {getFieldDecorator('userName', {
+            rules: [{ required: true, message: 'Please input your username!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="页面id" onChange={this.onChange}/>
+          )}
+        </Form.Item>
+      </Form>
+    );
+  }
+}
 
 class NavController extends React.PureComponent {
   static defaultProps = {
@@ -91,12 +132,44 @@ class NavController extends React.PureComponent {
     this.setState({
       isLoad: '上传',
     }, () => {
-      console.log(config, config.save);
-      config.post(config.save, { content: this.props.templateData.data });
-      this.setState({
-        isLoad: false,
-      });
+      config.post(config.save, { content: this.props.templateData.data }).then(resposne=>{
+        if(resposne.id){
+          config.preview(resposne.id);
+        } else {
+          message.error('保存失败');
+        }
+        this.setState({
+          isLoad: false
+        })
+      }).catch((error) => {
+        message.error(error);
+        this.setState({
+          isLoad: false,
+        });
+      })
+
     });
+  }
+
+  edit = () => {
+
+    const content = {};
+    const onChange = (value) => {
+      content.id = value;
+    };
+    const WrapEditForm = Form.create()(EditForm);
+
+    Modal.info({
+      title: '加载选项',
+      content: <WrapEditForm onChange={onChange}/>,
+      onOk: () => {
+        if(!content.id){
+          message.error('id不能为空');
+          return;
+        }
+        getMongoData1({id:content.id}, this.props.dispatch, (error)=>message.error(error));
+      }
+    })
   }
 
   onSaveCode = () => {
@@ -267,6 +340,11 @@ class NavController extends React.PureComponent {
         name: '上传',
         icon: this.state.isLoad === '上传' ? 'loading' : 'upload',
         onClick: this.state.isLoad === '上传' ? null : this.upload,
+      },
+      {
+        name: '编辑',
+        icon: this.state.isLoad === '编辑' ? 'loading' : 'edit',
+        onClick: this.state.isLoad === '编辑' ? null : this.edit,
       },
     ].map((item, i) => (
       <li key={i.toString()} onClick={item.onClick} disabled={!item.onClick}>

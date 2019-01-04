@@ -26,11 +26,11 @@ class Layout extends React.PureComponent {
       message: '问题收集',
       description: (
         <p>
-          目前编辑器处于测试阶段，如果你在编辑的过程中出现任何问题，都可以在
+          目前编辑器处于测试阶段，如果你在编辑的过程中出现任何问题，都可以在联系
           {' '}
-          <a href="https://github.com/ant-design/ant-design-landing/issues" target="_black">Landing issues</a>
+          <a href="mailto:chenrp@ctrip.com">陈芮芃</a>
           {' '}
-          上提出，我们会及时解决你的问题，谢谢！
+          提出，我们会及时解决你的问题，谢谢！
         </p>),
       icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
       duration: 0,

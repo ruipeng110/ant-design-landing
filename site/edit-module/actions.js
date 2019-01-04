@@ -1,10 +1,11 @@
 
 import AV from 'leancloud-storage';
+import queryString from 'query-string';
 import { getURLData, setURLData } from '../theme/template/utils';
 import defaultData from './default.template.config.js';
 
-import queryString from 'query-string';
 import { get, query } from '../config';
+
 export const appId = 'ogaJShC9qJERt8LqGO80z2pO-gzGzoHsz';
 export const appKey = '8e5H5xBF86hI9vItQI1pt4kP';
 const fileName = 'Edit';
@@ -74,20 +75,33 @@ export const switchTemplate = (key) => {
   location.reload();
 };
 
-export const getMongoData = dispatch => {
+export const getMongoData = (dispatch) => {
   const param = queryString.parse(location.search);
-  get(query, param).then(response=>{
+  get(query, param).then((response) => {
     dispatch({
       type: postType.POST_SUCCESS,
-      templateData: {attributes: response && response.content}
+      templateData: { attributes: response && response.content },
     });
   });
+};
 
-}
+export const getMongoData1 = (param, dispatch, cb) => {
+  get(query, param).then((response) => {
+    if (!response || !response.content) {
+      cb('查询失败');
+      return;
+    }
+    dispatch({
+      type: postType.POST_SUCCESS,
+      templateData: { attributes: response && response.content },
+    });
+  }).catch((error) => {
+    cb(error);
+  });
+};
 
 
 export const getUserData = data => (dispatch) => {
-  debugger
   // 获取 url 上是否有 user id;
   const hash = getURLData('uid');
   const cloneId = getURLData('cloneId');
